@@ -132,7 +132,7 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('Ion_auth_model', 'Ion_auth_acl_model','vendor_list_model');
+$autoload['model'] = array('Ion_auth_model', 'Ion_auth_acl_model');
 
 
 $autoload['time_zone'] = date_default_timezone_set('Asia/Kolkata');

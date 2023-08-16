@@ -465,68 +465,6 @@
             
             </section></form>
         </div>
-        <div class="col-md-6">
-            <form id="form-smtp" action="<?php echo base_url('settings/order_settings');?>" class="needs-validation form" novalidate="" method="post" enctype="multipart/form-data">
-                <section class="card">
-                    <header class="card-header">
-                        <div class="card-actions">
-                            <a href="#" class="card-action card-action-toggle" data-card-toggle=""></a>
-                            <a href="#" class="card-action card-action-dismiss" data-card-dismiss=""></a>
-                        </div>
-                        <h2 class="card-title ven">Order Settings</h2>
-                    </header>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <label class="col-sm-3 ">Min Order Price<span class="required">*</span></label>
-                            <div class="col-sm-9">
-                               <input type="number" class="form-control" name="min_order_price" placeholder="Min Order Price" required="" min="1" value="<?php echo $this->vendor_settings_model->where('key', 'min_order_price')->get()['value'];?>">
-                            </div>
-                            <div class="invalid-feedback">Min Order Price ?</div>
-                            <?php echo form_error('min_order_price','<div style="color:red">','</div>');?>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 ">Delivery Free Range (Km) <span class="required">*</span></label>
-                            <div class="col-sm-9">
-                                <input type="number" class="form-control" name="delivery_free_range" placeholder="Delivery Free Range (Km)" required="" min="0" value="<?php echo $this->vendor_settings_model->where('key','delivery_free_range')->get()['value'];?>">
-                            </div>
-                            <div class="invalid-feedback">Delivery Free Range (Km) ?</div>
-                            <?php echo form_error('delivery_free_range','<div style="color:red">','</div>');?>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 ">Min Delivery Fee<span class="required">*</span></label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" name="min_delivery_fee" placeholder="Min Delivery Feee" required="" value="<?php echo $this->vendor_settings_model->where('key','min_delivery_fee')->get()['value'];?>">
-                            </div>
-                            <div class="invalid-feedback">Min Delivery Fee ?</div>
-                            <?php echo form_error('min_delivery_fee','<div style="color:red" "margin_left=100px">','</div>');?>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 ">Extra Delivery Fee (per km)<span class="required">*</span></label>
-                            <div class="col-sm-9">
-                                 <input type="text" class="form-control" name="ext_delivery_fee" placeholder="Min Delivery Feee" required="" value="<?php echo $this->vendor_settings_model->where('key','ext_delivery_fee')->get()['value'];?>">
-                            </div>
-                            <div class="invalid-feedback">Extra Delivery Fee (per km) ?</div>
-                            <?php echo form_error('ext_delivery_fee','<div style="color:red" "margin_left=100px">','</div>');?>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 ">Tax (in %)<span class="required">*</span></label>
-                            <div class="col-sm-9">
-                                <input type="number" required="" class="form-control" name="tax" placeholder="Tax" value="<?php echo $this->vendor_settings_model->where('key','tax')->get()['value'];?>" min="0">
-                            </div>
-                            <div class="invalid-feedback">Tax ?</div>
-                            <?php echo form_error('tax','<div style="color:red" "margin_left=100px">','</div>');?>
-                        </div>
-
-                        <div class="row justify-content-end">
-                            <div class="col-sm-9">
-                                <button class="btn btn-primary">Submit</button>
-                                <input type="button" class="btn btn-default" onClick="clear_form('form-smtp')" value="Reset" />
-                            </div>
-                        </div>
-                    </div>
-            
-            </section></form>
-        </div>
         <!--      <div class="col-md-6">
             <form id="form-news" action="<?php echo base_url('settings/news');?>" class="needs-validation form" novalidate="" method="post" enctype="multipart/form-data">
                 <section class="card">

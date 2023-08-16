@@ -17,8 +17,6 @@ class MY_Controller extends MX_Controller
 		
 		if ( $this->ion_auth->logged_in() )
 		   $this->data['user'] = $this->ion_auth->user()->row();
-		
-		   $this->load->model('category_model');
 	}
 	
 	/*email availability*/
