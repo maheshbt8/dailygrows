@@ -11,17 +11,22 @@ if ( ! function_exists('sendEmail'))
     function sendEmail($from = null, $to = null, $sub = null, $msg = null, $reply_to = null, $cc = null, $bcc = null, $attachment = null)
     {//return TRUE;
         
-        if(!filter_var($from, FILTER_VALIDATE_EMAIL) ) {
+        /*if(!filter_var($from, FILTER_VALIDATE_EMAIL) ) {
             return false;
-        }
+        }*/
         
         $CI = & get_instance();
         if($msg != "") {
             
             $CI->load->library('email');
+            $CI->load->model('setting_model');
             //$CI->email->clear();
-            $smtp_host = $smtp_port = $smtp_user = $smtp_password = $mandrill_api_key = '';
-            
+            //$smtp_host = $smtp_port = $smtp_user = $smtp_password = $mandrill_api_key = '';
+            $smtp_host = $CI->setting_model->where('key','smtp_host')->get()['value'];
+            $smtp_port = $CI->setting_model->where('key','smtp_port')->get()['value'];
+            $smtp_user = $CI->setting_model->where('key','smtp_username')->get()['value'];
+            $smtp_password = $CI->setting_model->where('key','smtp_password')->get()['value'];
+            $mandrill_api_key = '';
             
             $config = Array(
                 'protocol' 	=> 'smtp',
@@ -37,7 +42,7 @@ if ( ! function_exists('sendEmail'))
             
             $CI->email->initialize($config);
             
-            $CI->email->from($smtp_user, $CI->config->item('site_settings')->site_title);
+            $CI->email->from($smtp_user, $CI->config->item('site_settings')->system_name);
             
             $CI->email->to($to);
             
@@ -232,4 +237,21 @@ if ( ! function_exists('prepare_flashmessage'))
         $CI =& get_instance();
         $CI->session->set_flashdata("message",$returnmsg);
     }
+}
+function float_val($foo)
+{
+    return number_format($foo, 2, '.', '');
+}
+function get_transaction_type($type)
+{
+    if($type == 'referrer'){
+        $val='Referance';
+    }else if($type == 'order_place'){
+        $val='Plan Purchased';
+    }else if($type == 'interest'){
+        $val='Interest On Plan';
+    }else if($type == 'withdrawal'){
+        $val='Amount Withdrawal';
+    }
+    return $val;
 }

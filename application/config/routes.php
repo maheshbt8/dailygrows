@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'auth';
+$route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
@@ -62,6 +62,8 @@ $route['category/(:any)'] = 'admin/master/category/$1';
  *Admin 
  */
 $route['dashboard'] = 'admin/dashboard';
+$route['plans'] = 'admin/plans';
+$route['addplan'] = 'admin/plans/addplan';
 $route['sample'] = 'admin/dashboard/sample';
 $route['settings/(:any)'] = 'admin/settings/$1';
 $route['vendor_settings/(:any)'] = 'admin/vendor_settings/$1';
@@ -90,16 +92,6 @@ $route['employee/(:any)'] = 'admin/employee/$1';
 $route['role/(:any)'] = 'admin/role/$1';
 $route['emp_list/(:any)'] = 'admin/emp_list/$1';
 
-/*vendors*/
-$route['vendors/(:any)'] = 'admin/master/vendors/$1';
-$route['vendors_filter/(:any)'] = 'admin/master/vendors_filter/$1';
-$route['vendor_payments/(:any)'] = 'vendor/vendor_payments/$1';
-$route['vendor_excel_import'] = 'vendor/vendor_excel_import';
-
-/*News*/
-$route['news_categories/(:any)'] = 'admin/news/news_categories/$1';
-$route['news/(:any)'] = 'admin/news/news/$1';
-$route['local_news/(:any)'] = 'admin/news/local_news/$1';
 
 
 /*Food*/

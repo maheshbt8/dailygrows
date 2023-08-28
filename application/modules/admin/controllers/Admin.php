@@ -306,53 +306,22 @@ class Admin extends MY_Controller
             }
         }elseif ($type == 'payment'){
             $this->setting_model->update([
-                'key' => 'pay_per_vendor',
-                'value' => $this->input->post('pay_per_vendor'),
+                'key' => 'pay_per_referal',
+                'value' => $this->input->post('pay_per_referal'),
             ],'key');
             $this->setting_model->update([
-                'key' => 'vendor_validation',
-                'value' => $this->input->post('vendor_validation'),
+                'key' => 'commission_on_withdraw',
+                'value' => $this->input->post('commission_on_withdraw'),
+            ],'key');
+            $this->setting_model->update([
+                'key' => 'withdraw_days',
+                'value' => $this->input->post('withdraw_days'),
+            ],'key');
+            $this->setting_model->update([
+                'key' => 'min_withdraw',
+                'value' => $this->input->post('min_withdraw'),
             ],'key');
             redirect('settings/r', 'refresh');
-        }elseif ($type == 'order_payment'){
-            $this->setting_model->update([
-                'key' => 'pay_per_order',
-                'value' => $this->input->post('pay_per_order'),
-            ],'key');
-            $this->setting_model->update([
-                'key' => 'order_validation',
-                'value' => $this->input->post('order_validation'),
-            ],'key');
-            redirect('settings/r', 'refresh');
-        }elseif ($type == 'news'){
-            $this->setting_model->update([
-                'key' => 'pay_per_news',
-                'value' => $this->input->post('pay_per_news'),
-            ],'key');
-           
-            redirect('settings/r', 'refresh');
-        }elseif ($type == 'order_settings') {
-             $this->vendor_settings_model->update([
-                    'key' => 'min_order_price',
-                    'value' => $this->input->post('min_order_price'),
-                ],'key');
-                $this->vendor_settings_model->update([
-                    'key' => 'delivery_free_range',
-                    'value' => $this->input->post('delivery_free_range'),
-                ],'key');
-                $this->vendor_settings_model->update([
-                    'key' => 'min_delivery_fee',
-                    'value' => $this->input->post('min_delivery_fee'),
-                ],'key');
-                $this->vendor_settings_model->update([
-                    'key' => 'ext_delivery_fee',
-                    'value' => $this->input->post('ext_delivery_fee'),
-                ],'key');
-                $this->vendor_settings_model->update([
-                    'key' => 'tax',
-                    'value' => $this->input->post('tax'),
-                ],'key');
-                redirect('settings/r', 'refresh');
         }
     }
     /**

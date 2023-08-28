@@ -401,20 +401,36 @@
                     </header>
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-sm-3 ">Pay per vendor<span class="required">*</span></label>
-                            <div class="col-sm-9">
-                                <input type="text" name="pay_per_vendor" class="form-control" placeholder="Pay per vendor" required="" value="<?php echo $this->setting_model->where('key','pay_per_vendor')->get()['value']?>">
+                            <label class="col-sm-6 ">Pay per referal (in rupees)<span class="required">*</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" name="pay_per_referal" class="form-control" placeholder="Pay per vendor" required="" value="<?php echo $this->setting_model->where('key','pay_per_referal')->get()['value']?>">
                             </div>
-                            <div class="invalid-feedback">Pay per vendor?</div>
-                            <?php echo form_error('pay_per_vendor','<div style="color:red">','</div>');?>
+                            <div class="invalid-feedback">Pay per referal?</div>
+                            <?php echo form_error('pay_per_referal','<div style="color:red">','</div>');?>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 ">Vendor validation count<span class="required">*</span></label>
-                            <div class="col-sm-9">
-                                <input type="text" name="vendor_validation" class="form-control" placeholder="Vendor validation count" required="" value="<?php echo $this->setting_model->where('key','vendor_validation')->get()['value']?>">
+                            <label class="col-sm-6 ">Minimum withdraw (in rupees)<span class="required">*</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" name="min_withdraw" class="form-control" placeholder="Minimum Withdraw Amount" required="" value="<?php echo $this->setting_model->where('key','min_withdraw')->get()['value']?>">
                             </div>
-                            <div class="invalid-feedback">Vendor validation count?</div>
-                            <?php echo form_error('vendor_validation','<div style="color:red">','</div>');?>
+                            <div class="invalid-feedback">Minimum withdraw?</div>
+                            <?php echo form_error('min_withdraw','<div style="color:red">','</div>');?>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 ">Commission on withdraw (in percentage)<span class="required">*</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" name="commission_on_withdraw" class="form-control" placeholder="Commission on withdraw" required="" value="<?php echo $this->setting_model->where('key','commission_on_withdraw')->get()['value']?>">
+                            </div>
+                            <div class="invalid-feedback">Commission on withdraw?</div>
+                            <?php echo form_error('commission_on_withdraw','<div style="color:red">','</div>');?>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 ">Withdraw days (in days)<span class="required">*</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" name="withdraw_days" class="form-control" placeholder="Vendor validation count" required="" value="<?php echo $this->setting_model->where('key','withdraw_days')->get()['value']?>">
+                            </div>
+                            <div class="invalid-feedback">Withdraw days?</div>
+                            <?php echo form_error('withdraw_days','<div style="color:red">','</div>');?>
                         </div>
 
                         <div class="row justify-content-end">
@@ -427,7 +443,7 @@
             
             </section></form>
         </div>
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
             <form id="form-smtp" action="<?php echo base_url('settings/order_payment');?>" class="needs-validation form" novalidate="" method="post" enctype="multipart/form-data">
                 <section class="card">
                     <header class="card-header">
@@ -464,7 +480,7 @@
                     </div>
             
             </section></form>
-        </div>
+        </div> -->
         <!--      <div class="col-md-6">
             <form id="form-news" action="<?php echo base_url('settings/news');?>" class="needs-validation form" novalidate="" method="post" enctype="multipart/form-data">
                 <section class="card">
