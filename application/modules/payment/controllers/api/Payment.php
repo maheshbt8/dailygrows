@@ -62,27 +62,17 @@ class Payment extends MY_REST_Controller
             }
         }else if($type == 'deposit'){
             $_POST = json_decode(file_get_contents('php://input'), TRUE);
-            $source = $this->input->post('BANK_ID');
-            if(! empty($_POST['AC'])){
-                $source = $this->bank_details_model->insert([
-                    'user_id' => $token_data->id,
-                    'name' => $this->input->post('NAME'),
-                    'ac' => $this->input->post('AC'),
-                    'ifsc' => $this->input->post('IFSC'),
-                    'bank_name' => $this->input->post('BANK_NAME'),
-                ]);
-            }
             $amount = floatval($this->input->post('TXNAMOUNT'));
             $wallet = $this->user_model->where('id', $token_data->id)->fields('wallet')->as_array()->get();
             $id = $this->wallet_transaction_model->insert([
                 'user_id' => $token_data->id,
-                'type' => 'CREDIT',
-                'cash' => $amount,
+                //'type' => 'CREDIT',
+                'credit' => $amount,
                 'balance' => floatval($wallet['wallet']) + $amount,
-                'paytm' => (isset($_POST['PAYTM']))? $this->input->post('PAYTM') : NULL ,
-                'upi' => (isset($_POST['UPI']))? $this->input->post('UPI') : NULL ,
-                'bank_id' => $source,
-                'order_id' => $this->input->post('ORDERID'),
+                'transaction_id'=>$this->input->post('TRANSACTION_ID'),
+                'transaction_type' => $this->input->post('TRANSACTION_TYPE'),
+                'title' => $this->input->post('TITLE'),
+                'reference' => $this->input->post('PLANID'),
                 'description' => $this->input->post('DESC'),
             ]);
             if($id){
@@ -106,6 +96,8 @@ class Payment extends MY_REST_Controller
                         'cash'=>(float)(($data[$i]['credit'] > 0)? float_val($data[$i]['credit']) : float_val($data[$i]['debit'])),
                         'type'=>(($data[$i]['credit'] > 0)? 'CREDIT' : 'DEBIT'),
                         'balance'=>(float)$data[$i]['balance'],
+                        'title'=>$data[$i]['title'],
+                        'description'=>$data[$i]['description'],
                         'transaction_type'=>$data[$i]['transaction_type'],
                         'transaction_value'=>get_transaction_type($data[$i]['transaction_type']),
                         'created_at'=>date('M d,Y h:i A',strtotime($data[$i]['created_at']))
@@ -120,6 +112,24 @@ class Payment extends MY_REST_Controller
         }
         
     }
+    public function bankdetails_post($type = 'list'){
+        $token_data = $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'));
+        if($type == 'add'){
+            $_POST = json_decode(file_get_contents('php://input'), TRUE);
+            $source = $this->bank_details_model->insert([
+                'user_id' => $token_data->id,
+                'name' => $this->input->post('NAME'),
+                'ac' => $this->input->post('AC'),
+                'ifsc' => $this->input->post('IFSC'),
+                'bank_name' => $this->input->post('BANK_NAME'),
+            ]);
+            $this->set_response_simple(null, 'Successfuly bank ditails added..!', REST_Controller::HTTP_OK, TRUE);
+        }elseif($type == 'list'){
+            $data = $this->bank_details_model->order_by('id', 'DESC')->where('user_id', $token_data->id)->get_all();
+            $this->set_response_simple(($data == FALSE)? FALSE : $data, 'Success..!', REST_Controller::HTTP_OK, TRUE);
+        }
+        
+    }
     
     public function payment_settings_get()
     {
@@ -130,12 +140,19 @@ class Payment extends MY_REST_Controller
     }
     public function plans_get($id='')
     {
-        if($id != ''){
-            $data = $this->db->where(['id', $id,'status'=>1])->get('plans')->row();
-            $this->set_response_simple(($data == FALSE) ? FALSE : $data, 'Success..!', REST_Controller::HTTP_OK, TRUE);
-        }else{
-            $data = $this->db->where(['status'=>1])->get('plans')->result();
-            $this->set_response_simple(($data == FALSE) ? FALSE : $data, 'Success..!', REST_Controller::HTTP_OK, TRUE);   
+        if(isset($_GET['id']) && $_GET['id'] != ''){
+            $id=$_GET['id'];
         }
+        if($id != ''){
+            $data = $this->db->where(['id'=> $id,'status'=>1])->get('plans')->result();
+        }else{
+            $data = $this->db->where(['status'=>1])->get('plans')->result();  
+        }
+        if($data){
+            for ($i=0; $i < count($data); $i++) { 
+                $data[$i]->created_at=date('M d,Y h:i A',strtotime($data[$i]->created_at));
+            }
+        }
+        $this->set_response_simple(($data == FALSE) ? FALSE : $data, 'Success..!', REST_Controller::HTTP_OK, TRUE); 
     }
 }

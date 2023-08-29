@@ -298,12 +298,29 @@ class Auth extends MY_REST_Controller
     }
     public function activate_user_post(){
         $_POST = json_decode(file_get_contents("php://input"), TRUE);
+        $this->load->model('wallet_transaction_model');
         $unique_id=$this->input->post('unique_id');
         if($unique_id != ''){
-            $user_data = $this->user_model->where('unique_id', $unique_id)
-                        ->get();
+            $user_data = $this->user_model->where('unique_id', $unique_id)->get();
             if($user_data){
                 $this->user_model->update(['status'=>1],$user_data['id']);
+                $referal_id=$user_data['referal_id'];
+                if($referal_id != ''){
+                    $wallet = $this->user_model->where('id', $referal_id)->fields('wallet,unique_id,id')->as_array()->get();
+                    $amount=$this->setting_model->where('key', 'pay_per_referal')->get()['value'];
+                    $id = $this->wallet_transaction_model->insert([
+                        'user_id' => $wallet['id'],
+                        //'type' => 'CREDIT',
+                        'credit' => $amount,
+                        'balance' => floatval($wallet['wallet']) + $amount,
+                        'transaction_id'=>'',
+                        'transaction_type' => 'referrer',
+                        'title' => get_transaction_type('referrer'),
+                        'reference' => $wallet['unique_id'],
+                        'description' => 'You got referal amount.',
+                    ]);
+                    $this->user_model->update(['wallet'=>(floatval($wallet['wallet']) + $amount)],$wallet['id']);
+                }
                 $this->set_response_simple($unique_id, 'SuccessFully Activated', REST_Controller::HTTP_OK, TRUE);
             }else{
                 $this->set_response_simple(null, 'Invalid Unique Id!', REST_Controller::HTTP_NON_AUTHORITATIVE_INFORMATION, FALSE);
