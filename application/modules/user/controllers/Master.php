@@ -105,14 +105,32 @@ class Master extends MY_REST_Controller
     public function user_details_get()
     {
         $token_data = $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'));
-        $this->load->model('user_model');
-        
+        $this->load->model('user_model');  
         $result = $this->user_model->order_by('id', 'DESC')
             ->fields('id,unique_id,first_name,last_name,email,phone, wallet')
             ->with_groups('fields:name,id')
             ->where('id', $token_data->id)
             ->get();
+        if($result){
+            $result['user_balance']=locked_amount($token_data->id,$result['wallet']);
+        }
         $this->set_response_simple(($result == FALSE) ? FALSE : $result, 'Success..!', REST_Controller::HTTP_OK, TRUE);
+    }
+
+    public function order_plans_get()
+    {
+        $token_data = $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'));
+        $this->load->model('wallet_transaction_model');
+        $wallet_tr=$this->wallet_transaction_model->fields('reference,created_at')->order_by('id', 'DESC')->where(['user_id'=> $token_data->id,'transaction_type'=>'order_place'])->get_all();
+        $plans=FALSE;
+        if($wallet_tr){
+            foreach ($wallet_tr as $wtr) {
+                $plan = $this->db->where(['id'=> $wtr['reference']])->get('plans')->row_array();
+                $plan['created_at']=date('M d,Y h:i A',strtotime($wtr['created_at']));
+                $plans[]=$plan;
+            }
+        }
+        $this->set_response_simple(($plans == FALSE) ? FALSE : $plans, 'Success..!', REST_Controller::HTTP_OK, TRUE);
     }
     
     /**

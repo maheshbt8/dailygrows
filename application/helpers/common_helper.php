@@ -255,3 +255,47 @@ function get_transaction_type($type)
     }
     return $val;
 }
+function locked_amount($id,$wallet_amount='')
+{
+    $CI =&  get_instance();
+    $CI->load->model('wallet_transaction_model');
+    //$data = $this->db->where(['id'=> $id])->get('plans')->result();
+    $wallet_tr=$CI->wallet_transaction_model->order_by('id', 'DESC')->where(['user_id'=> $id])->get_all();
+    $locked_amount=$unlocked_amount=$withdrawal_amount=0.00;
+    foreach ($wallet_tr as $wtr) {
+        $diff=getdays($wtr['created_at'],date('Y-m-d H:i:s'));
+        if($wtr['credit'] >0){
+            if($wtr['transaction_type']=='order_place'){
+                $data = $CI->db->where(['id'=> $wtr['reference']])->get('plans')->row();
+                if($diff <= $data->plan_duration){
+                    $locked_amount=$locked_amount+$wtr['credit'];
+                }else{
+                    $unlocked_amount=$unlocked_amount+$wtr['credit'];
+                }    
+            }else{
+                $unlocked_amount=$unlocked_amount+$wtr['credit'];
+            }
+        }else{
+            $withdrawal_amount=$withdrawal_amount+$wtr['debit'];
+        }   
+    }
+    $result=[
+        'wallet_amount'=>$wallet_amount,
+        'locked_amount'=>$locked_amount,
+        'unlocked_amount'=>$unlocked_amount,
+        'withdrawal_amount'=>$withdrawal_amount,
+    ];
+    //echo $CI->db->last_query();die;
+    return $result;
+}
+function getdays($start_date,$end_date)
+{
+    $date1 = new DateTime($start_date);
+    $date2 = new DateTime($end_date);
+    $interval = $date1->diff($date2);
+    return $interval->days;
+   /* $now = strtotime($end_date); // or your date as well
+    $your_date = strtotime($start_date);
+    $datediff = $now - $your_date;
+    return round($datediff / (60 * 60 * 24));*/
+}

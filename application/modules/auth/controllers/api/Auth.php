@@ -234,7 +234,12 @@ class Auth extends MY_REST_Controller
             "token" => $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'))
         ], 'verify', http_response_code(), TRUE);
     }
-    
+    public function logout_post()
+    {
+        $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'));
+        //print_r($res);die;
+        return $this->set_response(new stdclass(),"Logout SuccessFully.",MY_REST_Controller::HTTP_UNAUTHORIZED);
+    }
     public function create_user_post($id = 20){
         $_POST = json_decode(file_get_contents("php://input"), TRUE);
         $group = $this->group_model->where('id', $id)->get();

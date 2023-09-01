@@ -28,35 +28,15 @@ class Payment extends MY_REST_Controller
         $token_data = $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'));
         if($type == 'withdrawal'){
             $_POST = json_decode(file_get_contents('php://input'), TRUE);
-            $source = NULL;
-            if(! empty($_POST['AC'])){
-                $source = $this->bank_details_model->insert([
-                    'user_id' => $token_data->id,
-                    'name' => $this->input->post('NAME'),
-                    'ac' => $this->input->post('AC'),
-                    'ifsc' => $this->input->post('IFSC'),
-                    'bank_name' => $this->input->post('BANK_NAME'),
-                ]);
-            }
-            $amount = floatval($this->input->post('TXNAMOUNT'));
-            $wallet = $this->user_model->where('id', $token_data->id)->fields('wallet')->as_array()->get();
-            $id = $this->wallet_transaction_model->insert([
+            $amount = floatval($this->input->post('WITHDRAWAMOUNT'));
+            $withdraw_req = $this->db->insert('withdraw_requests',[
                 'user_id' => $token_data->id,
-                'type' => 'DEBIT',
-                'cash' => $amount,
-                'balance' => floatval($wallet['wallet']) - $amount,
-                'paytm' => (isset($_POST['PAYTM']))? $this->input->post('PAYTM') : NULL ,
-                'upi' => (isset($_POST['UPI']))? $this->input->post('UPI') : NULL ,
-                'bank_id' => $source,
-                'order_id' => $this->input->post('ORDERID'),
-                'description' => $this->input->post('DESC'),
+                'amount' => $amount,
+                'transaction_note' => 'User requested for withdrawal',
+                'bank_id' => $this->input->post('BANK_ID')
             ]);
-            if($id){
-                $this->user_model->update([
-                    'id' => $token_data->id,
-                    'wallet' =>  floatval($wallet['wallet']) - $amount
-                ], 'id');
-                $this->set_response(floatval($wallet['wallet'])- $amount, 'Wallet Updated', REST_Controller::HTTP_OK, TRUE);
+            if($withdraw_req){
+                $this->set_response(NULL, 'Withdraw Requested Successfuly ', REST_Controller::HTTP_OK, TRUE);
             }else{
                 $this->set_response(NULL, 'Internal Error Occured', REST_Controller::HTTP_OK, FALSE);
             }
@@ -123,7 +103,7 @@ class Payment extends MY_REST_Controller
                 'ifsc' => $this->input->post('IFSC'),
                 'bank_name' => $this->input->post('BANK_NAME'),
             ]);
-            $this->set_response_simple(null, 'Successfuly bank ditails added..!', REST_Controller::HTTP_OK, TRUE);
+            $this->set_response_simple(null, 'Successfully bank details added..!', REST_Controller::HTTP_OK, TRUE);
         }elseif($type == 'list'){
             $data = $this->bank_details_model->order_by('id', 'DESC')->where('user_id', $token_data->id)->get_all();
             $this->set_response_simple(($data == FALSE)? FALSE : $data, 'Success..!', REST_Controller::HTTP_OK, TRUE);
@@ -134,6 +114,7 @@ class Payment extends MY_REST_Controller
     public function payment_settings_get()
     {
         $result['pay_per_referal'] = $this->setting_model->where('key', 'pay_per_referal')->get()['value'];
+        $result['min_withdraw'] = $this->setting_model->where('key', 'min_withdraw')->get()['value'];
         $result['commission_on_withdraw'] = $this->setting_model->where('key', 'commission_on_withdraw')->get()['value'];
         $result['withdraw_days'] = $this->setting_model->where('key', 'withdraw_days')->get()['value'];
         $this->set_response_simple(($result == FALSE) ? FALSE : $result, 'Success..!', REST_Controller::HTTP_OK, TRUE);
