@@ -15,7 +15,7 @@ class Payment extends MY_Controller
         if($type == 'list'){
             $this->data['title'] = 'Transactions List';
             $this->data['content'] = 'payment/list';
-            if($_GET['user_id'] != ''){
+            if(isset($_GET['user_id']) && $_GET['user_id'] != ''){
                 $this->data['transactions'] = $this->wallet_transaction_model->where(['user_id'=>$_GET['user_id']])->order_by('created_at','desc')->get_all();
             }else{ 
                 $this->data['transactions'] = $this->wallet_transaction_model->order_by('created_at','desc')->get_all();
@@ -39,10 +39,10 @@ class Payment extends MY_Controller
         if($type == 'list'){
             $this->data['title'] = 'Withdraw List';
             $this->data['content'] = 'payment/withdraw_list';
-            if($_GET['user_id'] != ''){
-                $this->data['transactions'] = $this->db->get_where('withdraw_requests',['approved'=>0,'user_id'=>$_GET['user_id']])->order_by('created_at','desc')->result_array();
+            if(isset($_GET['user_id']) && $_GET['user_id'] != ''){
+                $this->data['transactions'] = $this->db->order_by('created_at','desc')->get_where('withdraw_requests',['approved'=>0,'user_id'=>$_GET['user_id']])->result_array();
             }else{
-                $this->data['transactions'] = $this->db->get_where('withdraw_requests',['approved'=>0])->order_by('created_at','desc')->result_array();
+                $this->data['transactions'] = $this->db->order_by('created_at','desc')->get_where('withdraw_requests',['approved'=>0])->result_array();
             }
             if(! empty($this->data['transactions'])){
                 for ($i = 0; $i < count($this->data['transactions']) ; $i++){
