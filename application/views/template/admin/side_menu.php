@@ -48,9 +48,22 @@
                             
                         </li>
 						<?php if($this->ion_auth_acl->has_permission('withdrawal')):?>
-						<li class="dropdown <?php echo $title == 'Transactions List'? 'active': '';?>"><a href="<?php echo base_url('wallet_transactions/list');?>" class="nav-link "><i class="fa fa-credit-card"></i><span>Transactions</span>
+						<!-- <li class="dropdown <?php echo $title == 'Transactions List'? 'active': '';?>"><a href="<?php echo base_url('wallet_transactions/list');?>" class="nav-link "><i class="fa fa-credit-card"></i><span>Transactions</span>
 							</a>
-						</li>
+						</li> -->
+                        <li class="dropdown <?php echo ($title == 'Transactions List' || $title == 'Withdraw List')? 'active': '';?>"><a href="#" class="nav-link has-dropdown"><i
+                                        class="fa fa-credit-card"></i><span>Transactions</span></a>
+                            <ul class="dropdown-menu">
+                                <?php if($this->ion_auth_acl->has_permission('emp') || $this->ion_auth_acl->has_permission('hr')):?>
+                                    <li class="<?php echo $title == 'Transactions List'? 'active': '';?>">
+                                        <a class="nav-link" href="<?php echo base_url('wallet_transactions/list')?>">Transactions List</a>
+                                    </li>
+                                    <li class="<?php echo $title == 'Withdraw List'? 'active': '';?>">
+                                        <a class="nav-link" href="<?php echo base_url('withdraw_list/list')?>">Withdraw Transaction</a>
+                                    </li>
+                                <?php endif;?>
+                            </ul>
+                        </li>
 						<?php endif;?>
                         <?php if($this->ion_auth_acl->has_permission('admin') || $this->ion_auth_acl->has_permission('hr')): ?>
                             <li class="dropdown <?php echo $title == 'Users'? 'active': '';?>"><a href="#" class="nav-link has-dropdown"><i

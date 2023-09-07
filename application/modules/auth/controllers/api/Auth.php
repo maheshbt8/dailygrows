@@ -238,7 +238,7 @@ class Auth extends MY_REST_Controller
     {
         $this->validate_token($this->input->get_request_header('X_AUTH_TOKEN'));
         //print_r($res);die;
-        return $this->set_response(new stdclass(),"Logout SuccessFully.",MY_REST_Controller::HTTP_UNAUTHORIZED);
+        return $this->set_response(new stdclass(),"Logout SuccessFully.",MY_REST_Controller::HTTP_OK,TRUE);
     }
     public function create_user_post($id = 20){
         $_POST = json_decode(file_get_contents("php://input"), TRUE);
