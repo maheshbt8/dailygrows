@@ -25,6 +25,11 @@
 			<?php $this->load->view('template/admin/side_menu');?>
 			<!-- Main Content -->
 			<div class="main-content">
+				<?php if(!empty($this->session->flashdata('message'))):?>
+                  <div class="alert alert-info" role="alert">
+                      <?php echo $this->session->flashdata('message')?>
+                  </div>
+              <?php endif;?>
 				<section class="section">
 					<?php $this->load->view($content);?>
 				</section>

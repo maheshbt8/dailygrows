@@ -389,7 +389,7 @@
         </div>
     </div>
     <div class="row">
-    	<div class="col-md-6">
+    	<div class="col-md-12">
             <form id="form-smtp" action="<?php echo base_url('settings/payment');?>" class="needs-validation form" novalidate="" method="post" enctype="multipart/form-data">
                 <section class="card">
                     <header class="card-header">
@@ -433,6 +433,11 @@
                             <?php echo form_error('withdraw_days','<div style="color:red">','</div>');?>
                         </div>
 
+                    <div class="form-group col-md-12">
+                        <label>Home Page Description</label> <br/>
+                        <?php echo $this->setting_model->where('key','home_page')->get()['value'];?>
+                        <textarea class="form-control ckeditor"  name="home_page" data-sample-short placeholder="Home Page Details" required=""><?php echo $this->setting_model->where('key','home_page')->get()['value'];?></textarea>
+                    </div>
                         <div class="row justify-content-end">
                             <div class="col-sm-9">
                                 <button class="btn btn-primary">Submit</button>

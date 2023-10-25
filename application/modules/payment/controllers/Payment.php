@@ -27,22 +27,56 @@ class Payment extends MY_Controller
             }
             $this->_render_page($this->template, $this->data);
         }elseif ($type == 'change_status'){
-            echo $this->wallet_transaction_model->update([
-                'id' => $this->input->post('id'),
-                'txn_id' => $this->input->post('txn_id'),
-                'status' => $this->input->post('status'),
-            ], 'id');
+            $this->db->where('id',$this->input->post('id'))->update('withdraw_requests',[
+                    'id' => $this->input->post('id'),
+                    'approved' => $this->input->post('status'),
+                 ]);
+            if($this->input->post('status') == 1){
+                $my_with=$this->db->get_where('withdraw_requests',['id'=>$this->input->post('id')])->row();
+                $amount = floatval($my_with->amount);
+                $wallet = $this->user_model->where('id', $my_with->user_id)->fields('wallet')->as_array()->get();
+                $id = $this->wallet_transaction_model->insert([
+                    'user_id' => $my_with->user_id,
+                    'debit' => $amount,
+                    'balance' => floatval($wallet['wallet']) - $amount,
+                    'transaction_id'=>$this->input->post('txn_id'),
+                    'transaction_type' => 'withdrawal',
+                    'title' => 'Withdraw Request Approved',
+                    'reference' => '',
+                    'description' => $my_with->transaction_note,
+                ]);
+                if($id){
+                    $this->user_model->update([
+                        'id' => $my_with->user_id,
+                        'wallet' =>  floatval($wallet['wallet']) - $amount
+                    ], 'id');
+                    $this->session->set_flashdata('message', 'Request Approved');
+                }else{
+                    $this->session->set_flashdata('message', 'Something Went wrong');
+                }
+                /*echo $this->wallet_transaction_model->update([
+                    'id' => $this->input->post('id'),
+                    'txn_id' => $this->input->post('txn_id'),
+                    'status' => $this->input->post('status'),
+                ], 'id');*/
+            }
+/*                echo $this->wallet_transaction_model->update([
+                    'id' => $this->input->post('id'),
+                    'txn_id' => $this->input->post('txn_id'),
+                    'status' => $this->input->post('status'),
+                ], 'id');*/
         }
     }
-    public function withdraw_list($type = 'list')
+    public function withdraw_list($type = 'list',$status='0')
     {
         if($type == 'list'){
             $this->data['title'] = 'Withdraw List';
             $this->data['content'] = 'payment/withdraw_list';
+            $this->data['page_status'] = $status;
             if(isset($_GET['user_id']) && $_GET['user_id'] != ''){
-                $this->data['transactions'] = $this->db->order_by('created_at','desc')->get_where('withdraw_requests',['approved'=>0,'user_id'=>$_GET['user_id']])->result_array();
+                $this->data['transactions'] = $this->db->order_by('created_at','desc')->get_where('withdraw_requests',['approved'=>$status,'user_id'=>$_GET['user_id']])->result_array();
             }else{
-                $this->data['transactions'] = $this->db->order_by('created_at','desc')->get_where('withdraw_requests',['approved'=>0])->result_array();
+                $this->data['transactions'] = $this->db->order_by('created_at','desc')->get_where('withdraw_requests',['approved'=>$status])->result_array();
             }
             if(! empty($this->data['transactions'])){
                 for ($i = 0; $i < count($this->data['transactions']) ; $i++){

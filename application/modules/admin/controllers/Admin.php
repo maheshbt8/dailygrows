@@ -321,6 +321,10 @@ class Admin extends MY_Controller
                 'key' => 'min_withdraw',
                 'value' => $this->input->post('min_withdraw'),
             ],'key');
+            $this->setting_model->update([
+                'key' => 'home_page',
+                'value' => $this->input->post('home_page'),
+            ],'key');
             redirect('settings/r', 'refresh');
         }
     }

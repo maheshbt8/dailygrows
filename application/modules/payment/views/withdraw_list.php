@@ -33,6 +33,10 @@
 <div class="card">
 	<div class="card-header">
 		<h4 class="ven">Withdraw Transaction</h4>
+
+		<a href="<?php echo base_url('withdraw_list/list')?>" class="btn <?php echo ($page_status == 0? 'btn-info' : 'btn-secondary');?> float-right">Pending</a>&nbsp;
+		<a href="<?php echo base_url('withdraw_list/list/1')?>" class="btn  <?php echo ($page_status == 1? 'btn-info' : 'btn-secondary');?> float-right">Approved</a>&nbsp;
+		<a href="<?php echo base_url('withdraw_list/list/2')?>" class="btn <?php echo ($page_status == 2? 'btn-info' : 'btn-secondary');?> float-right">Rejected</a>
 	</div>
 	<div class="card-body">
 		<div class="table-responsive">
@@ -54,18 +58,24 @@
 							<tr>
 								<td><?php echo $sno++;?></td>
 								<td><?php echo $transaction['amount'];?></td>
-								<td><a href="<?php echo base_url('withdraw_list/list?user_id='.$transaction['user_id']);?>"><?php echo $transaction['unique_id'];?></a></td>
+								<td><a href="<?php echo base_url('withdraw_list/list/'.$page_status.'/?user_id='.$transaction['user_id']);?>"><?php echo $transaction['unique_id'];?></a></td>
 								<td><?php echo $transaction['created_at'];?></td>
-								<td><?php if($transaction['approved'] == 1){echo '<label class="badge badge-success">Approved</label>';}else{echo '<label class="badge badge-primary">Pending</label>';}?></td>
+								<td><?php if($transaction['approved'] == 1){echo '<label class="badge badge-success">Approved</label>';}elseif($transaction['approved'] == 2){echo '<label class="badge badge-warning">Rejected</label>';}else{echo '<label class="badge badge-primary">Pending</label>';}?></td>
 								<td>
 									 <select  class="form-control border pay_status" id="<?php echo $transaction['id']?>">
                                           <option  disabled>..Select..</option>
                                           <?php if($transaction['approved'] == '0'){?>
                                               <option value="0" selected>Pending</option>
-                                              <option value="1">Success</option>
+                                              <option value="1">Approve</option>
+                                              <option value="2">Reject</option>
+                                          <?php }elseif($transaction['approved'] == '2'){?>
+                                              <option value="0">Pending</option>
+                                              <option value="1">Approve</option>
+                                              <option value="2" selected="">Reject</option>
                                           <?php }else{?>
-                                          	<option value="0" >Pending</option>
-                                              <option value="1" selected>Success</option>
+                                          	<!-- <option value="0" >Pending</option>
+                                            <option value="1">Approve</option>
+                                            <option value="2" selected>Reject</option> -->
                                           <?php }?>
                                       </select>
 								</td>

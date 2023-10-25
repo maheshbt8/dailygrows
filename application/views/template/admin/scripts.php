@@ -78,17 +78,20 @@ var audioElement = document.createElement('audio');
 		$('.pay_status').change(function(){
 			var id = $(this).attr('id');
 			var status = $(this).val();
-			var txn_id = prompt("Please enter Transaction Number");
-			  if (txn_id != null) {
-			    $.ajax({
-					url: base_url+'wallet_transactions/change_status',
-					type: 'post',
-					data:{id : id, status : status, txn_id : txn_id},
-					success: function(data){
-						window.location.reload();
-					}
-				});
-			  }
+            var txn_id = '';
+            if(status == 1){
+			 txn_id = prompt("Please enter Transaction Number");
+            }
+    		if ((txn_id != null && status == 1) || status == 2) {
+    		    $.ajax({
+    				url: base_url+'wallet_transactions/change_status',
+    				type: 'post',
+    				data:{id : id, status : status, txn_id : txn_id},
+    				success: function(data){
+    					window.location.reload();
+    				}
+    			});
+    		}
 		});
     });
 
@@ -240,7 +243,7 @@ function chat_body_content(id) {
             }
         });
 }
-setInterval("chat_body_content(chat_body_u_id)", 5000);
+//setInterval("chat_body_content(chat_body_u_id)", 5000);
 
 function send_chat_sms() {
     var sms=$('#my_chat_sms').val();

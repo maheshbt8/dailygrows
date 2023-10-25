@@ -113,4 +113,4 @@ $route['promos/(.+)'] = 'promos/index/$1';
 
 /*Payment*/
 $route['wallet_transactions/(:any)'] = 'payment/wallet_transactions/$1';
-$route['withdraw_list/(:any)'] = 'payment/withdraw_list/$1';
+$route['withdraw_list/(.+)'] = 'payment/withdraw_list/$1';
